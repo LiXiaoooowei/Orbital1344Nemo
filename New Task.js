@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import Button from 'react-native-button';
 import { NavigationActions } from 'react-navigation';
+import * as firebase from 'firebase';
 
 var RNFS = require('react-native-fs');
 var PushNotification = require('react-native-push-notification');
@@ -15,13 +16,15 @@ var PushNotification = require('react-native-push-notification');
 export default class newTask extends Component {
     constructor(props) {
       super(props);
+      const firebaseApp = this.props.screenProps[0];
+      this.tasksRef = firebaseApp.database().ref();
       this.state = { taskText: '',
                      daysText: '',
                      reminderText: ''
                    };
     }
     static navigationOptions = {
-        header: () => <Image style={styles.header} source={require('./Android Mobile ΓÇô 3.png')} />
+        header: () => <Image style={styles.header} source={require('./Android Mobile 3.png')} />
     }
     handlePress() {
       var errorMsg = '';
@@ -38,49 +41,78 @@ export default class newTask extends Component {
       if(!(hours >= 0 && hours < 24) || !(minutes >= 0 && minutes < 60)) {
         errorMsg = errorMsg + 'Error: Please enter reminder time in this format: HHMM\n';
       }
-      if(errorMsg != '') alert(errorMsg);
+      if(errorMsg != '') {
+        this.setState({taskText: ''});
+        this.setState({daysText: ''});
+        this.setState({reminderText: ''});
+        alert(errorMsg);
+      }
       else {
-        var date = new Date();
+        var date = new Date(Date.now() + 86400000);
 
-        if(date.getDate() + 1 < date.getDate()) {
-          if(date.getMonth() == 11) date.setFullYear(date.getFullYear() + 1, date.getMonth() + 1, date.getDate() + 1);
-          else date.setFullYear(date.getFullYear(), date.getMonth() + 1, date.getDate() + 1);
-        }
-        else date.setDate(date.getDate() + 1);
+        date.setHours(hours);
+        date.setMinutes(minutes);
+        date.setSeconds(0);
+        date.setMilliseconds(0);
 
-        PushNotification.localNotificationSchedule({
-          id: 0,
-          message: "Time to complete your daily challenge!",
-          date: date,
-          repeatType: 'day'
+        var taskID = 0;
+        var user = this.props.screenProps[2];
+        this.tasksRef.child('notifID').orderByChild('user').equalTo(user).once('value', (dataSnapShot) => {
+          dataSnapShot.forEach((child) => {
+            taskID=child.child('id').val();
+            var notif = "Time to complete your daily challenge: " + this.state.taskText + "!"
+            PushNotification.localNotificationSchedule({
+              id: taskID,
+              message: notif,
+              date: date,
+              repeatType: 'day'
+            });
+
+            date = new Date(Date.now());
+            
+            var taskIDString = taskID.toString();
+            var taskInput = this.tasksRef.child('task').child(user).child(taskIDString);
+            
+            taskInput.child('id').set(taskID);
+            taskInput.child('title').set(this.state.taskText);
+            taskInput.child('days').set(1);
+            taskInput.child('totalDays').set(this.state.daysText);
+            taskInput.child('lastUpdated').set([0,0,0]);
+            taskInput.child('progress').set(0.00);
+            
+            taskID++;
+            this.tasksRef.child('notifID').child(user).child('id').set(taskID);
+            alert("Task successfully added!");
+            this.props.navigation.dispatch(resetAction);
+          }); 
         });
-        
-        const { navigate } = this.props.navigation;
-        this.props.navigation.dispatch(resetAction);
       }
     }
+    /*componentDidMount() {
+      this.tasksRef.child('idStorage').child('notifID').child('id').set(0);
+    }*/
     render() {
       const { navigate } = this.props.navigation;
         return(
-            <Image style={styles.container} source={require('./Android Mobile ΓÇô 2.png')}>
+            <Image style={styles.container} source={require('./Android Mobile 2.png')}>
                 <View style={styles.row}>
                     <Text style={styles.text}>Task:</Text>
-                    <TextInput style={styles.textInput} onChangeText={(taskText) => this.setState({taskText})} />
+                    <TextInput value={this.state.taskText} style={styles.textInput} onChangeText={(text) => this.setState({taskText : text})} />
                     <Text style={styles.text}>Days:</Text>
-                    <TextInput style={styles.textInput} keyboardType='numeric' onChangeText={(daysText) => this.setState({daysText})} />                    
+                    <TextInput value={this.state.daysText} style={styles.textInput} keyboardType='numeric' onChangeText={(text) => this.setState({daysText: text})} />                    
                     <Button containerStyle={{padding:7, overflow:'hidden', borderRadius:30, backgroundColor: 'blue'}} 
                             style={styles.button}
                             onPress={()=>navigate('Help')}>?</Button>
                 </View>
-                <View style={styles.row}>
+                {/*<View style={styles.row}>
                     <Button containerStyle={{padding:7, overflow:'hidden', borderRadius:30, backgroundColor: 'blue'}} 
                             style={styles.button}>Video</Button>
                     <Button containerStyle={{padding:7, overflow:'hidden', borderRadius:30, backgroundColor: 'blue'}} 
                             style={styles.button}>Image</Button>
-                </View>
+                </View>*/}
                 <View style={styles.row}>
                     <Text style={styles.text}>Reminder Alarm:</Text>
-                    <TextInput style={styles.textInput} keyboardType='numeric' onChangeText={(reminderText) => this.setState({reminderText}) }/>                   
+                    <TextInput value={this.state.reminderText} style={styles.textInput} keyboardType='numeric' onChangeText={(text) => this.setState({reminderText: text}) }/>                   
                     <Button containerStyle={{padding:7, overflow:'hidden', borderRadius:30, backgroundColor: 'blue'}} 
                             style={styles.button}
                             onPress={()=>this.handlePress()}>Done</Button>
@@ -131,10 +163,9 @@ const styles = StyleSheet.create({
     resizeMode: 'stretch'
   },
 });
-
 const resetAction = NavigationActions.reset({
   index: 0,
   actions: [
-    NavigationActions.navigate({ routeName: 'Home'})
+    NavigationActions.navigate({ routeName: 'Loading'})
   ]
-})
+});

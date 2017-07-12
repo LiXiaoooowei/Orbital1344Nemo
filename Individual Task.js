@@ -11,7 +11,7 @@ import { NavigationActions } from 'react-navigation';
 
 export default class individualTask extends Component {
     static navigationOptions = {
-        header: () => <Image style={styles.header} source={require('./Android Mobile ΓÇô 3.png')} />
+        header: () => <Image style={styles.header} source={require('./Android Mobile 3.png')} />
     }
     handlePress() {
         
@@ -19,14 +19,14 @@ export default class individualTask extends Component {
     render() {
         const { state } = this.props.navigation;
         var componentArray = [];
-        var taskTitle = "Task: " + state.params.taskID;
+        var taskTitle = "Task: " + state.params.data[2];
 
-        for(var i = 1; i <= 100; i++) {
+        for(var i = 1; i <= Number.parseInt(state.params.data[5]); i++) {
             var day = "Day " + i + ":";
             componentArray.push(<DailyImages title={day} />);
         }
         return(
-            <Image style={styles.container} source={require('./Android Mobile ΓÇô 2.png')}>
+            <Image style={styles.container} source={require('./Android Mobile 2.png')}>
                 <ScrollView contentContainerStyle={styles.scroller}>
                     <Text style={styles.text}>{taskTitle}</Text>
                     <Button containerStyle={{padding:7, overflow:'hidden', borderRadius:30, backgroundColor: 'blue'}} 
@@ -44,7 +44,7 @@ class DailyImages extends Component {
         return (
             <View style={styles.row}>
                 <Text style={styles.text}>{this.props.title}</Text>
-                <Image style={styles.container} source={require('./Android Mobile ΓÇô 3.png')} />
+                {/*<Image style={styles.container} source={require('./Android Mobile 3.png')} />*/}
             </View>
         );
     }

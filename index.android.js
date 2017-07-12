@@ -5,3 +5,4 @@
  */
 
 import './Nemo';
+console.disableYellowBox = true;

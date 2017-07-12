@@ -7,23 +7,37 @@ import {
 } from 'react-native';
 import { NavigationActions } from 'react-navigation';
 import Button from 'react-native-button';
+import firebase from 'firebase';
 
 
 export default class task extends Component {
+    constructor(props) {
+      super(props);
+      const firebaseApp = this.props.screenProps[0];
+      this.tasksRef = firebaseApp.database().ref();
+      this.dataSet = this.props.screenProps[1];
+    }
     static navigationOptions = {
-        header: ({navigation}) => <Image style={styles.header} source={require('./Android Mobile ΓÇô 3.png')} />
+        header: () => <Image style={styles.header} source={require('./Android Mobile 3.png')} />
+    }
+    handlePress() {
+      firebase.auth().signOut();
+      this.props.navigation.dispatch(resetAction);
     }
     render() {
         const { navigate } = this.props.navigation;
-
+        
         return(
-            <Image style={styles.container} source={require('./Android Mobile ΓÇô 2.png')}>
+            <Image style={styles.container} source={require('./Android Mobile 2.png')}>
                 <Button containerStyle={{padding:7, overflow:'hidden', borderRadius:30, backgroundColor: 'blue'}} 
                                     style={styles.button} 
-                                    onPress={()=>navigate('Task')}>Challenges</Button>
+                                    onPress={()=>navigate('Task', {dataSet: this.dataSet})}>Challenges</Button>
                 <Button containerStyle={{padding:7, overflow:'hidden', borderRadius:30, backgroundColor: 'blue'}} 
                                     style={styles.button} 
-                                    onPress={()=>navigate('Achievements')}>Achievements</Button>
+                                    onPress={()=>navigate('Achievements', {dataSet: this.dataSet})}>Achievements</Button>
+                <Button containerStyle={{padding:7, overflow:'hidden', borderRadius:30, backgroundColor: 'blue'}} 
+                                    style={styles.button} 
+                                    onPress={()=>this.handlePress()}>LogOut</Button>
             </Image>
         );
     }
@@ -53,3 +67,10 @@ const styles = StyleSheet.create({
     color: 'white'
   }
 });
+
+const resetAction = NavigationActions.reset({
+  index: 0,
+  actions: [
+    NavigationActions.navigate({ routeName: 'SignIn'})
+  ]
+})
