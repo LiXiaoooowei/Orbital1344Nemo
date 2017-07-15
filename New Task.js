@@ -23,8 +23,16 @@ export default class newTask extends Component {
                      reminderText: ''
                    };
     }
+    static back(navigation) {
+        const {goBack} = navigation;
+        goBack();
+    }
     static navigationOptions = {
-        header: () => <Image style={styles.header} source={require('./Android Mobile 3.png')} />
+        header: ({navigation}) => <Image style={styles.header} source={require('./Android Mobile 3.png')}>
+                          <Button containerStyle={{padding:7, overflow:'hidden', borderRadius:30, backgroundColor: 'blue'}} 
+                                  style={styles.button}
+                                  onPress={()=>{newTask.back(navigation)}}>Back</Button>
+                      </Image>
     }
     handlePress() {
       var errorMsg = '';

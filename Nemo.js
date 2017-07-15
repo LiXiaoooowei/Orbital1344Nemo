@@ -11,6 +11,7 @@ import newTask from './New Task.js';
 import achievements from './Achievements.js';
 import individualTask from './Individual Task.js';
 import help from './Help.js';
+import share from './Share.js';
 import * as firebase from 'firebase';
 import { NavigationActions } from 'react-navigation';
 
@@ -37,7 +38,8 @@ const Navigate = StackNavigator({
     NewTask: { screen : newTask },
     Achievements: { screen : achievements },
     IndividualTask: { screen : individualTask },
-    Help : { screen : help }
+    Help : { screen : help },
+    //Share : { screen : share }
 });
 
 AppRegistry.registerComponent('nemo', () => nemo);

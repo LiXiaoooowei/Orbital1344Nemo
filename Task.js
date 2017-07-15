@@ -19,12 +19,19 @@ export default class task extends Component {
         const {navigate} = navigation;
         navigate('NewTask');
     }
+    static back(navigation) {
+        const {goBack} = navigation;
+        goBack();
+    }
     static navigationOptions = {
         header: ({navigation}) => (
             <Image style={styles.header} source={require('./Android Mobile 3.png')}>
                 <Button containerStyle={{padding:7, overflow:'hidden', borderRadius:30, backgroundColor: 'blue'}} 
                         style={styles.button}
                         onPress={()=>{task.newTask(navigation)}}>+</Button>
+                <Button containerStyle={{padding:7, overflow:'hidden', borderRadius:30, backgroundColor: 'blue'}} 
+                        style={styles.button}
+                        onPress={()=>{task.back(navigation)}}>Back</Button>
             </Image>
         ),
     }

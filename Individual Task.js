@@ -10,13 +10,22 @@ import Button from 'react-native-button';
 import { NavigationActions } from 'react-navigation';
 
 export default class individualTask extends Component {
+    static back(navigation) {
+        const {goBack} = navigation;
+        goBack();
+    }
     static navigationOptions = {
-        header: () => <Image style={styles.header} source={require('./Android Mobile 3.png')} />
+        header: ({navigation}) => <Image style={styles.header} source={require('./Android Mobile 3.png')}>
+                            <Button containerStyle={{padding:7, overflow:'hidden', borderRadius:30, backgroundColor: 'blue'}} 
+                                  style={styles.button}
+                                  onPress={()=>{individualTask.back(navigation)}}>Back</Button>
+                      </Image>
     }
     handlePress() {
         
     }
     render() {
+        const { navigate } = this.props.navigation;
         const { state } = this.props.navigation;
         var componentArray = [];
         var taskTitle = "Task: " + state.params.data[2];
@@ -59,8 +68,11 @@ const styles = StyleSheet.create({
     width: null,
     resizeMode: 'stretch'
   },
-  header: {
-    flex: 0.1, 
+ header: {
+    flex: 0.1,
+    justifyContent: 'flex-end',
+    alignItems: 'center', 
+    flexDirection: 'row',  
     backgroundColor: 'rgba(0,0,0,0)',
     height: null,
     width: null,

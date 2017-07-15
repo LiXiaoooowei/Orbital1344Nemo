@@ -4,10 +4,20 @@ import {
   Image,
   Text,
 } from 'react-native';
+import Button from 'react-native-button';
+import { NavigationActions } from 'react-navigation';
 
-export default class achievements extends Component {
+export default class help extends Component {
+    static back(navigation) {
+        const {goBack} = navigation;
+        goBack();
+    }
     static navigationOptions = {
-        header: () => <Image style={styles.header} source={require('./Android Mobile 3.png')} />
+        header: ({navigation}) => <Image style={styles.header} source={require('./Android Mobile 3.png')}>
+                            <Button containerStyle={{padding:7, overflow:'hidden', borderRadius:30, backgroundColor: 'blue'}} 
+                                  style={styles.button}
+                                  onPress={()=>{help.back(navigation)}}>Back</Button>
+                      </Image>
     }
     render() {
         var helpMsg = "For Task, input the task you desire to achieve.\nFor Days, input the number of Days you would like to commit to the task. (Must be at least 100)\nFor Reminder, input the time at which you would like to be reminded of the task. (Format: HHMM)"
@@ -29,7 +39,10 @@ const styles = StyleSheet.create({
     resizeMode: 'stretch'
   },
   header: {
-    flex: 0.1, 
+    flex: 0.1,
+    justifyContent: 'flex-end',
+    alignItems: 'center', 
+    flexDirection: 'row',  
     backgroundColor: 'rgba(0,0,0,0)',
     height: null,
     width: null,
@@ -39,5 +52,9 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: 'black',
     textAlign: 'center'
-  }
+  },
+  button: {
+    fontSize: 15,
+    color: 'white'
+  },
 });

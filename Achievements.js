@@ -5,10 +5,20 @@ import {
   Image,
   ScrollView
 } from 'react-native';
+import Button from 'react-native-button';
+import { NavigationActions } from 'react-navigation';
 
 export default class achievements extends Component {
+    static back(navigation) {
+        const {goBack} = navigation;
+        goBack();
+    }
     static navigationOptions = {
-        header: () => <Image style={styles.header} source={require('./Android Mobile 3.png')} />
+        header: ({navigation}) => <Image style={styles.header} source={require('./Android Mobile 3.png')}>
+                            <Button containerStyle={{padding:7, overflow:'hidden', borderRadius:30, backgroundColor: 'blue'}} 
+                                  style={styles.button}
+                                  onPress={()=>{achievements.back(navigation)}}>Back</Button>
+                      </Image>
     }
     render() {
         const { state } = this.props.navigation;
@@ -40,7 +50,10 @@ const styles = StyleSheet.create({
     resizeMode: 'stretch'
   },
   header: {
-    flex: 0.1, 
+    flex: 0.1,
+    justifyContent: 'flex-end',
+    alignItems: 'center', 
+    flexDirection: 'row',  
     backgroundColor: 'rgba(0,0,0,0)',
     height: null,
     width: null,
@@ -54,5 +67,9 @@ const styles = StyleSheet.create({
   scroller: {
     justifyContent: 'flex-start',
     alignItems: 'center',
-  }
+  },
+  button: {
+    fontSize: 15,
+    color: 'white'
+  },
 });
