@@ -12,6 +12,7 @@ import achievements from './Achievements.js';
 import individualTask from './Individual Task.js';
 import help from './Help.js';
 import share from './Share.js';
+import gallery from './Gallery.js';
 import * as firebase from 'firebase';
 import { NavigationActions } from 'react-navigation';
 
@@ -26,7 +27,7 @@ const firebaseApp = firebase.initializeApp(config);
 
 class nemo extends Component {
   render() {
-    return <Navigate screenProps={[firebaseApp, [], '']} />;
+    return <Navigate screenProps={[firebaseApp, [], '', false]} />;
   }
 }
 
@@ -39,7 +40,8 @@ const Navigate = StackNavigator({
     Achievements: { screen : achievements },
     IndividualTask: { screen : individualTask },
     Help : { screen : help },
-    //Share : { screen : share }
+    Gallery: { screen : gallery },
+    Share : { screen : share }
 });
 
 AppRegistry.registerComponent('nemo', () => nemo);

@@ -3,7 +3,8 @@ import {
   StyleSheet,
   Image,
   ScrollView,
-  ProgressBarAndroid
+  ProgressBarAndroid,
+  View
 } from 'react-native';
 import { NavigationActions } from 'react-navigation';
 import Button from 'react-native-button';
@@ -26,12 +27,16 @@ export default class task extends Component {
     static navigationOptions = {
         header: ({navigation}) => (
             <Image style={styles.header} source={require('./Android Mobile 3.png')}>
-                <Button containerStyle={{padding:7, overflow:'hidden', borderRadius:30, backgroundColor: 'blue'}} 
-                        style={styles.button}
-                        onPress={()=>{task.newTask(navigation)}}>+</Button>
-                <Button containerStyle={{padding:7, overflow:'hidden', borderRadius:30, backgroundColor: 'blue'}} 
-                        style={styles.button}
-                        onPress={()=>{task.back(navigation)}}>Back</Button>
+                <View style={styles.headerL}>
+                    <Button containerStyle={{padding:7, overflow:'hidden', borderRadius:30, backgroundColor: 'blue'}} 
+                            style={styles.button}
+                            onPress={()=>{task.back(navigation)}}>Back</Button>
+                </View>
+                <View style={styles.headerR}>
+                    <Button containerStyle={{padding:7, overflow:'hidden', borderRadius:30, backgroundColor: 'blue'}} 
+                            style={styles.button}
+                            onPress={()=>{task.newTask(navigation)}}>+</Button>
+                </View>
             </Image>
         ),
     }
@@ -47,7 +52,7 @@ export default class task extends Component {
 
         for(let i = 1; i < state.params.dataSet.length; i++) {
           if(state.params.dataSet[i][0] < 1) {
-            var title = "Task: " + state.params.dataSet[i][2] + " Day " + state.params.dataSet[i][1];
+            var title = "Task: " + state.params.dataSet[i][3] + " Day " + state.params.dataSet[i][1];
             buttonArray.push(<Button containerStyle={{padding:7, overflow:'hidden', borderRadius:30, backgroundColor: 'blue'}} 
                                      style={styles.button}
                                      onPress={()=>this.handlePress(i)}>
@@ -77,6 +82,26 @@ const styles = StyleSheet.create({
   },
   header: {
     flex: 0.1,
+    justifyContent: 'center',
+    alignItems: 'center', 
+    flexDirection: 'row',  
+    backgroundColor: 'rgba(0,0,0,0)',
+    height: null,
+    width: null,
+    resizeMode: 'stretch'
+  },
+  headerL: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    alignItems: 'center', 
+    flexDirection: 'row',  
+    backgroundColor: 'rgba(0,0,0,0)',
+    height: null,
+    width: null,
+    resizeMode: 'stretch'
+  },
+  headerR: {
+    flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center', 
     flexDirection: 'row',  

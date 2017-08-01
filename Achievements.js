@@ -3,7 +3,8 @@ import {
   StyleSheet,
   Text,
   Image,
-  ScrollView
+  ScrollView,
+  View
 } from 'react-native';
 import Button from 'react-native-button';
 import { NavigationActions } from 'react-navigation';
@@ -25,7 +26,7 @@ export default class achievements extends Component {
         var textOutput = [];
         for(var i = 1; i < state.params.dataSet.length; i++) {
             if(state.params.dataSet[i][0] == 1) {
-                var title = "Achievement: " + state.params.dataSet[i][2] + ": " + state.params.dataSet[i][1] + " Days!";
+                var title = "Achievement: " + state.params.dataSet[i][3] + ": " + state.params.dataSet[i][1] + " Days!";
                 textOutput.push(<Text style={styles.text}>{title}</Text>);
             }
         }
@@ -51,7 +52,7 @@ const styles = StyleSheet.create({
   },
   header: {
     flex: 0.1,
-    justifyContent: 'flex-end',
+    justifyContent: 'flex-start',
     alignItems: 'center', 
     flexDirection: 'row',  
     backgroundColor: 'rgba(0,0,0,0)',

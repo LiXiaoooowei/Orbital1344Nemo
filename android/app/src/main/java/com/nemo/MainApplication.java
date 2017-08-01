@@ -3,13 +3,16 @@ package com.nemo;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.brentvatne.react.ReactVideoPackage;
 import cl.json.RNSharePackage;
+import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
+import com.imagepicker.ImagePickerPackage;
+import com.rnfs.RNFSPackage;
+import com.RNFetchBlob.RNFetchBlobPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
-import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
-import com.rnfs.RNFSPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -25,10 +28,13 @@ public class MainApplication extends Application implements ReactApplication {
     @Override
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
-          new MainReactPackage(),
-            new RNSharePackage(),
-          new ReactNativePushNotificationPackage(),
-          new RNFSPackage()
+    	new MainReactPackage(),
+        new ReactVideoPackage(),
+        new RNSharePackage(),
+        new ReactNativePushNotificationPackage(),
+        new ImagePickerPackage(),
+        new RNFSPackage(),
+        new RNFetchBlobPackage()
       );
     }
   };

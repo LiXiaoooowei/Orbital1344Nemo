@@ -21,6 +21,7 @@ export default class task extends Component {
         header: () => <Image style={styles.header} source={require('./Android Mobile 3.png')} />
     }
     handlePress() {
+      this.props.screenProps[1] = [];
       firebase.auth().signOut();
       this.props.navigation.dispatch(resetAction);
     }

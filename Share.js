@@ -34,11 +34,11 @@ export default class TestShare extends Component {
       this.onOpen();
   }
   render() {
- 
+    const { state } = this.props.navigation;
     let shareOptions = {
       title: "Image",
       message: "Nemo",
-      url: "https://firebasestorage.googleapis.com/v0/b/nemo-31ad6.appspot.com/o/Android%20Mobile%201.png?alt=media&token=139126a7-23c8-4dc0-948c-5e203a27d4c5",
+      url: state.params.uri,
       subject: "Share Link" //  for email 
     };
  

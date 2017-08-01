@@ -3,6 +3,7 @@ import {
   StyleSheet,
   Image,
   Text,
+  View
 } from 'react-native';
 import Button from 'react-native-button';
 import { NavigationActions } from 'react-navigation';
@@ -40,7 +41,7 @@ const styles = StyleSheet.create({
   },
   header: {
     flex: 0.1,
-    justifyContent: 'flex-end',
+    justifyContent: 'flex-start',
     alignItems: 'center', 
     flexDirection: 'row',  
     backgroundColor: 'rgba(0,0,0,0)',
