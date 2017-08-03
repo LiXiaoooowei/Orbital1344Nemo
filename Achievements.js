@@ -16,18 +16,23 @@ export default class achievements extends Component {
     }
     static navigationOptions = {
         header: ({navigation}) => <Image style={styles.header} source={require('./Android Mobile 3.png')}>
-                            <Button containerStyle={{padding:7, overflow:'hidden', borderRadius:30, backgroundColor: 'blue'}} 
-                                  style={styles.button}
-                                  onPress={()=>{achievements.back(navigation)}}>Back</Button>
-                      </Image>
+                                    <Button containerStyle={{padding:7, overflow:'hidden', borderRadius:30, backgroundColor: 'blue'}} 
+                                        style={styles.button}
+                                        onPress={()=>{achievements.back(navigation)}}>Back</Button>
+                                  </Image>
+    }
+    handlePress(i) {
+        const { navigate } = this.props.navigation;
+        const { state } = this.props.navigation;
+        navigate('Gallery', {media: state.params.dataSet[i]});
     }
     render() {
         const { state } = this.props.navigation;
         var textOutput = [];
-        for(var i = 1; i < state.params.dataSet.length; i++) {
+        for(let i = 1; i < state.params.dataSet.length; i++) {
             if(state.params.dataSet[i][0] == 1) {
                 var title = "Achievement: " + state.params.dataSet[i][3] + ": " + state.params.dataSet[i][1] + " Days!";
-                textOutput.push(<Text style={styles.text}>{title}</Text>);
+                textOutput.push(<Text onPress={()=>this.handlePress(i)} style={styles.text}>{title}</Text>);
             }
         }
 
