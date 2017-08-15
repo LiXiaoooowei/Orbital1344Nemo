@@ -16,10 +16,9 @@ export default class gallery extends Component {
     render() {
         const { state } = this.props.navigation;
         var mediaURI = [];
-        for(var i = 2; i < state.params.media.length; i++) {
+        for(var i = 2; i < state.params.data[2].length; i++) {
             mediaURI.push({
-                uri: state.params.media[i],
-                isVid: state.params.media[0]
+                uri: state.params.data[2][i]
             });
         }
         return (
@@ -27,7 +26,12 @@ export default class gallery extends Component {
             <Swiper
                 navigation={this.props.navigation}
                 media={mediaURI}
-                url={state.params.media}
+                url={state.params.data[2]}
+                caption={state.params.data[3]}
+                data={state.params.data}
+                index={state.params.index}
+                user={this.props.screenProps[2]}
+                firebase={this.props.screenProps[0]}
             />
         </Image>
         );
@@ -42,5 +46,10 @@ const styles = StyleSheet.create({
     height: null,
     width: null,
     resizeMode: 'stretch'
+  },
+  text: {
+    fontSize: 20,
+    color: 'black',
+    textAlign: 'center'
   }
 });

@@ -4,13 +4,14 @@ import {
   Image,
   View,
   Text,
-  TextInput
+  TextInput,
+  Picker
 } from 'react-native';
 import Button from 'react-native-button';
 import { NavigationActions } from 'react-navigation';
 import * as firebase from 'firebase';
 import ImagePicker from 'react-native-image-picker';
-import RNFetchBlob from 'react-native-fetch-blob'
+import RNFetchBlob from 'react-native-fetch-blob';
 
 var PushNotification = require('react-native-push-notification');
 const imageOptions = {
@@ -37,7 +38,8 @@ export default class newTask extends Component {
       this.tasksRef = firebaseApp.database().ref();
       this.state = { taskText: '',
                      daysText: '',
-                     reminderText: '',
+                     reminderHour: '0',
+                     reminderMin: '0',
                      mediaSource: null,
                      isVid: true
                    };
@@ -56,31 +58,23 @@ export default class newTask extends Component {
     handlePress() {
       var errorMsg = '';
       var days = Number.parseInt(this.state.daysText, 10);
-      var reminder = Number.parseInt(this.state.reminderText, 10);
-
-      var hours = reminder / 100;
-      var minutes = reminder % 100;
 
       if(this.state.taskText == '') errorMsg = errorMsg + 'Error: Please enter a task\n';
-      if(days < 100 || isNaN(days)) {
-        errorMsg = errorMsg + 'Error: Days must be at least 100\n';
-      }    
-      if(!(hours >= 0 && hours < 24) || !(minutes >= 0 && minutes < 60)) {
-        errorMsg = errorMsg + 'Error: Please enter reminder time in this format: HHMM\n';
+      if(days < 30 || isNaN(this.state.daysText) || this.state.daysText == '') {
+        errorMsg = errorMsg + 'Error: Days must be at least 30\n';
       }
       if(this.state.mediaSource == null) errorMsg = errorMsg +  "Please select an image or video to upload that depicts your goal";
       if(errorMsg != '') {
         this.setState({taskText: ''});
         this.setState({daysText: ''});
-        this.setState({reminderText: ''});
         alert(errorMsg);
       }
       else {
         this.props.screenProps[3] = true;
         var date = new Date(Date.now() + 86400000);
 
-        date.setHours(hours);
-        date.setMinutes(minutes);
+        date.setHours(Number.parseInt(this.state.reminderHour));
+        date.setMinutes(Number.parseInt(this.state.reminderMin));
         date.setSeconds(0);
         date.setMilliseconds(0);
 
@@ -91,7 +85,7 @@ export default class newTask extends Component {
             taskID=child.child('id').val();
             var notif = "Time to complete your daily challenge: " + this.state.taskText + "!"
             PushNotification.localNotificationSchedule({
-              id: taskID,
+              id: taskID.toString(),
               message: notif,
               date: date,
               repeatType: 'day'
@@ -108,6 +102,7 @@ export default class newTask extends Component {
             taskInput.child('totalDays').set(this.state.daysText);
             taskInput.child('lastUpdated').set([0,0,0]);
             taskInput.child('progress').set(0.00);
+            taskInput.child('caption').set([""]);
             
             const media = this.state.mediaSource.uri;
 
@@ -200,6 +195,16 @@ export default class newTask extends Component {
     }*/
     render() {
       const { navigate } = this.props.navigation;
+
+      var hourPicker = [];
+      var minPicker = [];
+      for(var i = 0; i <= 23; i++) {
+        hourPicker.push(<Picker.Item label={i.toString()} value={i.toString()} />);
+      }
+      for(var j = 0; j <= 59; j++) {
+        minPicker.push(<Picker.Item label={j.toString()} value={j.toString()} />);
+      }
+
         return(
             <Image style={styles.container} source={require('./Android Mobile 2.png')}>
                 <View style={styles.row}>
@@ -212,20 +217,36 @@ export default class newTask extends Component {
                             onPress={()=>navigate('Help')}>?</Button>
                 </View>
                 <View style={styles.row}>
-                    <Button containerStyle={{padding:7, overflow:'hidden', borderRadius:30, backgroundColor: 'blue'}} 
-                            style={styles.button}
+                    <Button containerStyle={{padding:10, overflow:'hidden', borderRadius:15, backgroundColor: 'blue'}} 
+                            style={styles.button2}
                             onPress={()=>this.handleVideo()}>Video</Button>
-                    <Button containerStyle={{padding:7, overflow:'hidden', borderRadius:30, backgroundColor: 'blue'}} 
-                            style={styles.button}
+                    <Button containerStyle={{padding:10, overflow:'hidden', borderRadius:15, backgroundColor: 'rgba(0,0,0,0)',}} 
+                                    style={styles.button}/>
+                    <Button containerStyle={{padding:10, overflow:'hidden', borderRadius:15, backgroundColor: 'blue'}} 
+                            style={styles.button2}
                             onPress={()=>this.handleImage()}>Image</Button>
                 </View>
                 <View style={styles.row}>
                     <Text style={styles.text}>Reminder Alarm:</Text>
-                    <TextInput value={this.state.reminderText} style={styles.textInput} keyboardType='numeric' onChangeText={(text) => this.setState({reminderText: text}) }/>                   
-                    <Button containerStyle={{padding:7, overflow:'hidden', borderRadius:30, backgroundColor: 'blue'}} 
-                            style={styles.button}
-                            onPress={()=>this.handlePress()}>Done</Button>
+                    <Picker selectedValue={this.state.reminderHour}
+                            mode = 'dropdown'
+                            style={styles.picker}
+                            onValueChange={(itemValue, itemIndex) => this.setState({reminderHour: itemValue})}>
+                            {hourPicker}
+                    </Picker>
+                    <Text style={styles.textColon}>:</Text>
+                    <Picker selectedValue={this.state.reminderMin}
+                            mode = 'dropdown'
+                            style={styles.picker}
+                            onValueChange={(itemValue, itemIndex) => this.setState({reminderMin: itemValue})}>
+                            {minPicker}
+                    </Picker>
                 </View>
+                <Button containerStyle={{padding:10, overflow:'hidden', borderRadius:15, backgroundColor: 'blue'}} 
+                        style={styles.button2}
+                        onPress={()=>this.handlePress()}>Done</Button>
+                <Button containerStyle={{padding:10, overflow:'hidden', borderRadius:15, backgroundColor: 'rgba(0,0,0,0)',}} 
+                                    style={styles.button}/>
             </Image>
         );
     }
@@ -235,6 +256,7 @@ const styles = StyleSheet.create({
  container: {
     flex: 1,
     justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: 'rgba(0,0,0,0)',
     height: null,
     width: null,
@@ -252,14 +274,28 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: 'white'
   },
+  button2: {
+    width: 100,
+    fontSize: 15,
+    color: 'white'
+  },
   text: {
     flex: 1,
     fontSize: 20,
     color: 'black',
     textAlign: 'center'
   },
+  textColon: {
+    flex: 0.25,
+    fontSize: 20,
+    color: 'black',
+    textAlign: 'center'
+  },
   textInput: {
     flex: 1
+  },
+  picker: {
+    flex: 0.5
   },
   header: {
     flex: 0.1,

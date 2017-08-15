@@ -19,16 +19,14 @@ export default class loading extends Component {
   componentDidMount() {
     this.props.screenProps[2] = firebase.auth().currentUser.uid;
     var user = this.props.screenProps[2];
-    if (this.dataSet.length == 0 || this.dataSet[0] != user) {
-      this.dataSet = [];
-      this.dataSet.push(user);
-    }
+    this.dataSet = [];
+    this.dataSet.push(user);
     if(this.props.screenProps[3] == false) {
       this.tasksRef.child('notifID').orderByChild('user').equalTo(user).once('value', (dataSnapShot) => {
         if(dataSnapShot.exists()){
           dataSnapShot.forEach((child) => {
             if(child.child('id').val() != 0) {
-              this.tasksRef.child('task').child(user).orderByChild('id').startAt(this.dataSet.length - 1).once('value', (dataSnapShot) => {
+              this.tasksRef.child('task').child(user).orderByChild('id').once('value', (dataSnapShot) => {
                 dataSnapShot.forEach((child) => {
                   var data = [];
                   var date = new Date(Date.now());
@@ -37,28 +35,38 @@ export default class loading extends Component {
                   var month = child.child('lastUpdated').child(1).val();
                   var year = child.child('lastUpdated').child(2).val();
 
-                  if(date.getDate() != day || date.getMonth() != month || date.getFullYear() != year) {
+                  if(child.child('progress').val() != 1.0 && (date.getDate() != day || date.getMonth() != month || date.getFullYear() != year)) {
                       date = new Date(Date.now() - 86400000);
 
-                      if(child.child('progress').val() != 1.0 && (date.getDate() != day || date.getMonth() != month || date.getFullYear() != year)) {
+                      if(date.getDate() != day || date.getMonth() != month || date.getFullYear() != year) {
                           this.tasksRef.child('task').child(user).child(child.child('id').val()).child('progress').set(0);
                           data.push(0);
                           this.tasksRef.child('task').child(user).child(child.child('id').val()).child('days').set(1);
                           data.push(1);
                           this.tasksRef.child('task').child(user).child(child.child('id').val()).child('media').set([child.child('media').child(0).val(),child.child('media').child(1).val()]);
                           data.push([child.child('media').child(0).val(),child.child('media').child(1).val()]);
+                          this.tasksRef.child('task').child(user).child(child.child('id').val()).child('caption').set([""]);
+                          data.push([""]);
                       }
                       else {
-                        this.tasksRef.child('task').child(user).child(child.child('id').val()).child('days').set(child.child('media').val().length - 1);
+                        var numDays = child.child('media').val().length - 1;
+
+                        this.tasksRef.child('task').child(user).child(child.child('id').val()).child('days').set(numDays);
                         data.push(child.child('progress').val());
-                        data.push(child.child('media').val().length - 1);
+                        data.push(numDays);
                         data.push(child.child('media').val());
+
+                        var captions = child.child('caption').val();
+                        if(captions.length < numDays) captions.push("");
+                        this.tasksRef.child('task').child(user).child(child.child('id').val()).child('caption').set(captions);
+                        data.push(captions);
                       }
                   }
                   else {
                       data.push(child.child('progress').val());
                       data.push(child.child('days').val());
                       data.push(child.child('media').val());
+                      data.push(child.child('caption').val());
                   }
                   
                   var lastUpdated = [];

@@ -10,6 +10,8 @@ import task from './Task.js';
 import newTask from './New Task.js';
 import achievements from './Achievements.js';
 import individualTask from './Individual Task.js';
+import dailyMedia from './DailyMedia.js';
+import editCaption from './EditCaption.js';
 import help from './Help.js';
 import share from './Share.js';
 import gallery from './Gallery.js';
@@ -39,9 +41,11 @@ const Navigate = StackNavigator({
     NewTask: { screen : newTask },
     Achievements: { screen : achievements },
     IndividualTask: { screen : individualTask },
-    Help : { screen : help },
+    DailyMedia: { screen : dailyMedia },
+    EditCaption: { screen : editCaption },
+    Help: { screen : help },
     Gallery: { screen : gallery },
-    Share : { screen : share }
+    Share: { screen : share }
 });
 
 AppRegistry.registerComponent('nemo', () => nemo);

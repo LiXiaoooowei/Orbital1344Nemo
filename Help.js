@@ -21,7 +21,7 @@ export default class help extends Component {
                       </Image>
     }
     render() {
-        var helpMsg = "For Task, input the task you desire to achieve.\nFor Days, input the number of Days you would like to commit to the task. (Must be at least 100)\nFor Reminder, input the time at which you would like to be reminded of the task. (Format: HHMM)"
+        var helpMsg = "For Task, input the task you desire to achieve.\nFor Days, input the number of Days you would like to commit to the task. (Must be at least 30)\nFor Reminder, input the time at which you would like to be reminded of the task. (Format: HHMM)"
         return (
             <Image style={styles.container} source={require('./Android Mobile 2.png')}>
                 <Text style={styles.text}>{helpMsg}</Text>

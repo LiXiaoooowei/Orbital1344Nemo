@@ -37,7 +37,7 @@ export default class TestShare extends Component {
     const { state } = this.props.navigation;
     let shareOptions = {
       title: "Image",
-      message: "Nemo",
+      message: state.params.caption,
       url: state.params.uri,
       subject: "Share Link" //  for email 
     };
