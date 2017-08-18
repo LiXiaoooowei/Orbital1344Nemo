@@ -7,6 +7,7 @@ import App from './src/app.js';
 import loading from './Loading Screen.js';
 import home from './Home.js';
 import task from './Task.js';
+import removeTask from './RemoveTask.js';
 import newTask from './New Task.js';
 import achievements from './Achievements.js';
 import individualTask from './Individual Task.js';
@@ -38,6 +39,7 @@ const Navigate = StackNavigator({
     Loading: { screen : loading },
     Home: { screen : home },
     Task: { screen : task },
+    RemoveTask: { screen : removeTask },
     NewTask: { screen : newTask },
     Achievements: { screen : achievements },
     IndividualTask: { screen : individualTask },

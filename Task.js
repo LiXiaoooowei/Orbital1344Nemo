@@ -10,8 +10,6 @@ import {
 import { NavigationActions } from 'react-navigation';
 import Button from 'react-native-button';
 
-var PushNotification = require('react-native-push-notification');
-
 export default class task extends Component {
     constructor(props) {
       super(props);
@@ -48,13 +46,6 @@ export default class task extends Component {
         const { state } = this.props.navigation;
         navigate('IndividualTask', {data: this.dataSet[i], index: i});
     }
-    handleRemove(i) {
-        var iD = this.dataSet[i][5];
-        PushNotification.cancelLocalNotifications({id: iD.toString()});
-        this.props.screenProps[1].splice(i,1);
-        this.tasksRef.child('task').child(this.props.screenProps[2]).child(iD).remove();
-        this.props.navigation.dispatch(resetAction);
-    }
     render() {
         const { navigate } = this.props.navigation;
         const { state } = this.props.navigation;
@@ -81,7 +72,7 @@ export default class task extends Component {
                                     style={styles.button}/>
                             <Button containerStyle={{padding:10, overflow:'hidden', borderRadius:15, backgroundColor: 'blue'}} 
                                     style={styles.button2}
-                                    onPress={()=>this.handleRemove(i)}>
+                                    onPress={()=>navigate('RemoveTask', {index: i})}>
                                     Remove Task
                             </Button>
                         </View>
